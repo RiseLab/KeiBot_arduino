@@ -3,7 +3,10 @@
 
 #define LED_PIN 13
 
+AF_DCMotor motor1(1);
+AF_DCMotor motor2(2);
 AF_DCMotor motor3(3);
+AF_DCMotor motor4(4);
 
 Servo servoCamH;
 Servo servoCamV;
@@ -16,8 +19,14 @@ void setup()
   
   pinMode(LED_PIN, OUTPUT);
 
-  motor3.setSpeed(200);
+  motor1.setSpeed(255);
+  motor2.setSpeed(255);
+  motor3.setSpeed(255);
+  motor4.setSpeed(255);
+  motor1.run(RELEASE);
+  motor2.run(RELEASE);
   motor3.run(RELEASE);
+  motor4.run(RELEASE);
   
   servoCamH.attach(9, 544, 2340);
   servoCamH.write(90);
@@ -38,22 +47,55 @@ void loop()
       String command = (comStartPos != -1) ? inputString.substring(comStartPos + 3) : "";
 
       if (command != ""){
-        
+
         Serial.println(command);
 
         inputString = "";
-        
+
         // move forward command
         if (command == "mf"){
-            digitalWrite(LED_PIN, HIGH);
+            //digitalWrite(LED_PIN, HIGH);
+            motor1.run(FORWARD);
+            motor2.run(FORWARD);
             motor3.run(FORWARD);
+            motor4.run(FORWARD);
+            return;
+        }
+
+        // move backward command
+        if (command == "mb"){
+            motor1.run(BACKWARD);
+            motor2.run(BACKWARD);
+            motor3.run(BACKWARD);
+            motor4.run(BACKWARD);
+            return;
+        }
+
+        // turn left command
+        if (command == "tl"){
+            motor1.run(FORWARD);
+            motor3.run(FORWARD);
+            motor2.run(BACKWARD);
+            motor4.run(BACKWARD);
+            return;
+        }
+
+        // turn right command
+        if (command == "tr"){
+            motor1.run(BACKWARD);
+            motor3.run(BACKWARD);
+            motor2.run(FORWARD);
+            motor4.run(FORWARD);
             return;
         }
 
         // stop command
         if (command == "ms"){
-            digitalWrite(LED_PIN, LOW);
+            //digitalWrite(LED_PIN, LOW);
+            motor1.run(RELEASE);
+            motor2.run(RELEASE);
             motor3.run(RELEASE);
+            motor4.run(RELEASE);
             return;
         }
 
